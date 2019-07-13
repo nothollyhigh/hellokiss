@@ -40,6 +40,11 @@ class Websocket{
 
                 self.ws.close();
 
+                // shutdown
+                if (self.state == self.SOCK_STATE_CLOSED) {
+                    return;
+                }
+
                 self.state = self.SOCK_STATE_CONNECTING;
                 
                 self.init(wsImpl);
