@@ -1,0 +1,1 @@
+window._CCSettings={platform:"web-mobile",groupList:["default"],collisionMatrix:[[true]],rawAssets:{assets:{}},assetTypes:[],launchScene:"db://assets/Scene/Plaza.fire",scenes:[{url:"db://assets/Scene/Plaza.fire",uuid:0}],packedAssets:{"018c46c00":[0,"fc7e/kgmZJJ6vc+AGNjcWN"]},md5AssetsMap:{},orientation:"",subpackages:{},uuids:["15hTlIbWVO6bAS2cCXgRvm"]};
