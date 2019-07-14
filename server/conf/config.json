@@ -3,7 +3,7 @@
 	"Debug": true,
 	
 	//日志目录
-	"LogDir": "./logs/plaza/",
+	"LogDir": "./logs/",
 	
 	//前端静态资源
 	"StaticDir": "static",
