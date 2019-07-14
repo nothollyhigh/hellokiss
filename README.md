@@ -1,5 +1,8 @@
 # hellokiss
 
+[![MIT licensed][1]][2]
+[![Go Report Card][3]][4]
+
 [1]: https://img.shields.io/badge/license-MIT-blue.svg
 [2]: LICENSE.md
 [3]: https://goreportcard.com/badge/github.com/nothollyhigh/hellokiss
