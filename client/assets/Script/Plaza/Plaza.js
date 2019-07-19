@@ -53,11 +53,10 @@ cc.Class({
     },
 
     onWsClose: function(self) {
-        cc.log('Plaza onWsClose');
-        // self.scheduleOnce(function() {
-        //     cc.plazaWs = new Websocket();
-        //     cc.plazaWs.init(this);
-        // }, 1)
+        cc.log('Plaza onWsClose', new Date());
+        self.scheduleOnce(function() {
+            cc.plazaWs.init(self);
+        }, 1)
     },
 
     onWsError: function(self) {

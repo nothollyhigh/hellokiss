@@ -47,7 +47,7 @@ class Websocket{
 
                 self.state = self.SOCK_STATE_CONNECTING;
                 
-                self.init(wsImpl);
+                // self.init(wsImpl);
             };
             self.ws.onerror = function (event) {
                 if (wsImpl.onWsError) {
