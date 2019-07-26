@@ -90,7 +90,7 @@ class Websocket{
             if (handler) {
                 handler.cb(handler.instance, cmd, data)
             } else {
-                cc.log("Plaza no handler for cmd:", cmd);
+                cc.log("no handler for cmd:", cmd);
             }
         }
     }

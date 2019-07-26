@@ -10,6 +10,7 @@ cc.Class({
         //plazaTxt: cc.Label,
 
         CMD_PING: 0x1 << 24,
+        CMD_PING2: (0x1 << 24) + 1,
         CMD_LOGIN_REQ: 1, //登录请求
         CMD_LOGIN_RSP: 2, //登录相应
         CMD_BROADCAST_NOTIFY: 3, //广播通知
@@ -27,6 +28,8 @@ cc.Class({
             cc.plazaWs = new Websocket();
             cc.plazaWs.init(self);
             
+            
+            cc.plazaWs.handle(self, self.CMD_PING2, self.onKeepalive);
             cc.plazaWs.handle(self, self.CMD_LOGIN_RSP, self.onLoginRsp);
             cc.plazaWs.handle(self, self.CMD_BROADCAST_NOTIFY, self.onBroadcastNotify);
 
@@ -65,6 +68,10 @@ cc.Class({
         //     cc.plazaWs = new Websocket();
         //     cc.plazaWs.init(this);
         // }, 1)
+    },
+
+    onKeepalive: function(self, cmd, data) {
+        self.count++
     },
 
     onLoginRsp: function(self, cmd, data) {
