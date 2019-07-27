@@ -22,6 +22,9 @@ class Websocket{
                 self.ws = new SockJS(wsImpl.wsUrl);
             }
 
+            // 消息类型,不设置则默认为'text'
+            self.ws.binaryType = 'arraybuffer';
+
             self.state = self.SOCK_STATE_CONNECTING;
 
 
@@ -54,22 +57,14 @@ class Websocket{
                     wsImpl.onWsError(wsImpl);
                 }
             };
-            self.ws.onmessage = function (event) {
-                try {
-                    var arr = new TextEncoder("utf-8").encode(event.data.slice(0,16));
-                    var length = arr[0] | arr[1]<<8 | arr[2]<<16 | arr[3]<<24;
-                    var cmd = arr[4] | arr[5]<<8 | arr[6]<<16 | arr[7]<<24;
-                    if (cmd == self.CmdPing) { return };
-                    var data;
-                    if (event.data.length > 16) {
-                        data = JSON.parse(event.data.slice(16, event.data.length));
-                    }
-                    // cc.log("onmessage data: ", data);
-                    self.onMessage(cmd, data)
-                } catch(e) {
-                    cc.log("Websocket onmessage panic:", e);
+
+            self.ws.onmessage = function(event) {
+                if (self.ws.binaryType == 'arraybuffer') {
+                    self.onBinaryMessage(self, event);    
+                } else {
+                    self.onTextMessage(self, event);
                 }
-            };
+            }
         } catch (e) {
             cc.log("Websocket constructor failed:", e);
         }
@@ -81,6 +76,41 @@ class Websocket{
             self.handlers = {};
         }
         self.handlers[cmd] = {instance: instance, cb: cb};
+    }
+
+    onTextMessage(self, event) {
+        var self = this;
+        try {
+            var arr = new TextEncoder("utf-8").encode(event.data.slice(0,16));
+            var length = arr[0] | arr[1]<<8 | arr[2]<<16 | arr[3]<<24;
+            var cmd = arr[4] | arr[5]<<8 | arr[6]<<16 | arr[7]<<24;
+            if (cmd == self.CmdPing) { return };
+            var data;
+            if (event.data.length > 16) {
+                data = JSON.parse(event.data.slice(16, event.data.length));
+            }
+            // cc.log("onmessage data: ", data);
+            self.onMessage(cmd, data)
+        } catch(e) {
+            cc.log("Websocket onmessage panic:", e);
+        }
+    }
+
+    onBinaryMessage(self, event) {
+        try {
+            var headArr = new Uint8Array(event.data.slice(0, 16));
+            var bodyArr = new TextDecoder("utf-8").decode(event.data.slice(16, event.data.length));
+            var length = headArr[0] | headArr[1]<<8 | headArr[2]<<16 | headArr[3]<<24;
+            var cmd = headArr[4] | headArr[5]<<8 | headArr[6]<<16 | headArr[7]<<24;
+            if (cmd == self.CmdPing) { return };
+            var data;
+            if (length > 0 && bodyArr.length > 16) {
+                data = JSON.parse(bodyArr);
+            }
+            self.onMessage(cmd, data)
+        } catch(e) {
+            cc.log("Websocket onmessage panic:", e);
+        }
     }
 
     onMessage(cmd, data) {
