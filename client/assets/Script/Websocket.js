@@ -1,3 +1,5 @@
+var pako = require('pako');
+
 class Websocket{
     // use this for initialization
     init(wsImpl) {
@@ -10,6 +12,7 @@ class Websocket{
         self.SOCK_STATE_CLOSED = 0;
         self.SOCK_STATE_CONNECTING = 1;
         self.SOCK_STATE_CONNECTED = 2;
+        self.CmdFlagMaskGzip = 1 << 31;
 
         self.state = self.SOCK_STATE_CONNECTING;
 
@@ -102,6 +105,12 @@ class Websocket{
             var bodyArr = new TextDecoder("utf-8").decode(event.data.slice(16, event.data.length));
             var length = headArr[0] | headArr[1]<<8 | headArr[2]<<16 | headArr[3]<<24;
             var cmd = headArr[4] | headArr[5]<<8 | headArr[6]<<16 | headArr[7]<<24;
+            // console.log("--- 111 cmd: ", cmd, self.CmdFlagMaskGzip, cmd & self.CmdFlagMaskGzip, cmd & self.CmdFlagMaskGzip == self.CmdFlagMaskGzip)
+            if ((cmd & self.CmdFlagMaskGzip) == self.CmdFlagMaskGzip) {
+                cmd = (cmd << 1) >> 1;
+                // console.log("--- 222 cmd: ", cmd)
+                bodyArr = pako.inflate(bodyArr);
+            }
             if (cmd == self.CmdPing) { return };
             var data;
             if (length > 0 && bodyArr.length > 16) {
