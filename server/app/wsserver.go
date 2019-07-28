@@ -16,7 +16,7 @@ var (
 
 func startWsServer() {
 	var err error
-	var cipher = net.NewCipherGzip(-1)
+	var cipher = net.NewCipherGzip(net.CipherGzipAll)
 
 	wsServer, err = net.NewWebsocketServer("KISS", config.SvrAddr)
 	if err != nil {
